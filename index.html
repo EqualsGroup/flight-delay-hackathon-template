@@ -124,7 +124,7 @@
       border-radius: 8px;
       transition: all 0.3s ease;
     }
-    #airportList {
+    #airportList, #carrierList, #originAirportList {
       list-style: none;
       padding: 0;
       margin: 5px 0;
@@ -136,16 +136,16 @@
       background: white;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
-    #airportList li {
+    #airportList li, #carrierList li, #originAirportList li {
       padding: 12px;
       cursor: pointer;
       transition: all 0.2s ease;
       border-bottom: 1px solid #f0f0f0;
     }
-    #airportList li:last-child {
+    #airportList li:last-child, #carrierList li:last-child, #originAirportList li:last-child {
       border-bottom: none;
     }
-    #airportList li:hover {
+    #airportList li:hover, #carrierList li:hover, #originAirportList li:hover {
       background-color: #f8f9fa;
       padding-left: 20px;
     }
@@ -178,7 +178,7 @@
       right: auto;
     }
 
-    [dir="rtl"] #airportList li:hover {
+    [dir="rtl"] #airportList li:hover, [dir="rtl"] #carrierList li:hover, [dir="rtl"] #originAirportList li:hover {
       padding-right: 20px;
       padding-left: 12px;
     }
@@ -218,11 +218,23 @@
   </div>
   <div class="container">
     <h1 id="title">Flight Delay Predictor</h1>
+
+    <div class="form-group">
+      <label for="originAirportInput" id="originAirportLabel">Origin Airport:</label>
+      <input type="text" id="originAirportInput" placeholder="Please start typing an origin airport name">
+      <ul id="originAirportList"></ul>
+    </div>
     
     <div class="form-group">
       <label for="airportInput" id="airportLabel">Arrival Airport:</label>
       <input type="text" id="airportInput" placeholder="Please start typing an arrival airport name">
       <ul id="airportList"></ul>
+    </div>
+
+    <div class="form-group">
+      <label for="carrierInput" id="carrierLabel">Carrier:</label>
+      <input type="text" id="carrierInput" placeholder="Please start typing a carrier name">
+      <ul id="carrierList"></ul>
     </div>
 
     <div class="form-group">
@@ -249,7 +261,11 @@
         results: 'Results:',
         delayChance: 'There is a {probability}% chance that your flight will be delayed by more than 15 minutes.',
         error: 'Error checking delay probability. Please try again.',
-        airportPlaceholder: 'Please start typing an arrival airport name'
+        airportPlaceholder: 'Please start typing an arrival airport name',
+        originAirport: 'Origin Airport:',
+        carrier: 'Carrier:',
+        originAirportPlaceholder: 'Please start typing an origin airport name',
+        carrierPlaceholder: 'Please start typing a carrier name'
       },
       es: {
         title: 'Predictor de Retrasos de Vuelos',
@@ -262,7 +278,11 @@
         results: 'Resultados:',
         delayChance: 'Hay un {probability}% de probabilidad de que su vuelo se retrase más de 15 minutos.',
         error: 'Error al verificar la probabilidad de retraso. Por favor, inténtelo de nuevo.',
-        airportPlaceholder: 'Por favor, empiece a escribir el nombre del aeropuerto de llegada'
+        airportPlaceholder: 'Por favor, empiece a escribir el nombre del aeropuerto de llegada',
+        originAirport: 'Aeropuerto de Origen:',
+        carrier: 'Aerolínea:',
+        originAirportPlaceholder: 'Por favor, empiece a escribir el nombre del aeropuerto de origen',
+        carrierPlaceholder: 'Por favor, empiece a escribir el nombre de la aerolínea'
       },
       de: {
         title: 'Flugverspätungs-Prognose',
@@ -275,7 +295,11 @@
         results: 'Ergebnisse:',
         delayChance: 'Es besteht eine {probability}% Wahrscheinlichkeit, dass sich Ihr Flug um mehr als 15 Minuten verspätet.',
         error: 'Fehler bei der Überprüfung der Verspätungswahrscheinlichkeit. Bitte versuchen Sie es erneut.',
-        airportPlaceholder: 'Bitte beginnen Sie den Namen des Ankunftsflughafens einzugeben'
+        airportPlaceholder: 'Bitte beginnen Sie den Namen des Ankunftsflughafens einzugeben',
+        originAirport: 'Abflughafen:',
+        carrier: 'Fluggesellschaft:',
+        originAirportPlaceholder: 'Bitte beginnen Sie den Namen des Abflughafens einzugeben',
+        carrierPlaceholder: 'Bitte beginnen Sie den Namen der Fluggesellschaft einzugeben'
       },
       ar: {
         title: 'متنبئ تأخير الرحلات',
@@ -288,7 +312,11 @@
         results: 'النتائج:',
         delayChance: 'هناك احتمال {probability}% بأن تتأخر رحلتك لأكثر من 15 دقيقة.',
         error: 'خطأ في التحقق من احتمالية التأخير. يرجى المحاولة مرة أخرى.',
-        airportPlaceholder: 'يرجى البدء في كتابة اسم مطار الوصول'
+        airportPlaceholder: 'يرجى البدء في كتابة اسم مطار الوصول',
+        originAirport: 'مطار المغادرة:',
+        carrier: 'شركة الطيران:',
+        originAirportPlaceholder: 'يرجى البدء في كتابة اسم مطار المغادرة',
+        carrierPlaceholder: 'يرجى البدء في كتابة اسم شركة الطيران'
       }
     };
 
@@ -313,19 +341,36 @@
       document.getElementById('checkButton').textContent = translations[currentLanguage].checkButton;
       document.getElementById('resetButton').textContent = translations[currentLanguage].resetButton;
       document.getElementById('airportInput').placeholder = translations[currentLanguage].airportPlaceholder;
+      document.getElementById('originAirportLabel').textContent = translations[currentLanguage].originAirport;
+      document.getElementById('carrierLabel').textContent = translations[currentLanguage].carrier;
+      document.getElementById('originAirportInput').placeholder = translations[currentLanguage].originAirportPlaceholder;
+      document.getElementById('carrierInput').placeholder = translations[currentLanguage].carrierPlaceholder;
     }
 
     let selectedAirportId = null;
+    let selectedOriginAirportId = null;
+    let selectedCarrierId = null;
     let debounceTimer;
 
     document.getElementById('airportInput').addEventListener('input', function(e) {
       clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => searchAirports(e.target.value), 300);
+      debounceTimer = setTimeout(() => searchAirports(e.target.value, 'destination'), 300);
     });
 
-    async function searchAirports(query) {
+    document.getElementById('originAirportInput').addEventListener('input', function(e) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => searchAirports(e.target.value, 'origin'), 300);
+    });
+
+    document.getElementById('carrierInput').addEventListener('input', function(e) {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => searchCarriers(e.target.value), 300);
+    });
+
+    async function searchAirports(query, type) {
+      const listId = type === 'origin' ? 'originAirportList' : 'airportList';
       if (!query) {
-        document.getElementById('airportList').style.display = 'none';
+        document.getElementById(listId).style.display = 'none';
         return;
       }
 
@@ -333,13 +378,13 @@
         const response = await fetch(`http://localhost:3000/airports?name=${encodeURIComponent(query)}`);
         const airports = await response.json();
         
-        const airportList = document.getElementById('airportList');
+        const airportList = document.getElementById(listId);
         airportList.innerHTML = '';
         
         airports.forEach(airport => {
           const li = document.createElement('li');
           li.textContent = airport.name;
-          li.onclick = () => selectAirport(airport);
+          li.onclick = () => type === 'origin' ? selectOriginAirport(airport) : selectAirport(airport);
           airportList.appendChild(li);
         });
         
@@ -349,10 +394,48 @@
       }
     }
 
+    async function searchCarriers(query) {
+      if (!query) {
+        document.getElementById('carrierList').style.display = 'none';
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3000/carriers?name=${encodeURIComponent(query)}`);
+        const carriers = await response.json();
+        
+        const carrierList = document.getElementById('carrierList');
+        carrierList.innerHTML = '';
+        
+        carriers.forEach(carrier => {
+          const li = document.createElement('li');
+          li.textContent = carrier.name;
+          li.onclick = () => selectCarrier(carrier);
+          carrierList.appendChild(li);
+        });
+        
+        carrierList.style.display = carriers.length ? 'block' : 'none';
+      } catch (error) {
+        console.error('Error fetching carriers:', error);
+      }
+    }
+
     function selectAirport(airport) {
       document.getElementById('airportInput').value = airport.name;
       selectedAirportId = airport.id;
       document.getElementById('airportList').style.display = 'none';
+    }
+
+    function selectOriginAirport(airport) {
+      document.getElementById('originAirportInput').value = airport.name;
+      selectedOriginAirportId = airport.id;
+      document.getElementById('originAirportList').style.display = 'none';
+    }
+
+    function selectCarrier(carrier) {
+      document.getElementById('carrierInput').value = carrier.name;
+      selectedCarrierId = carrier.id;
+      document.getElementById('carrierList').style.display = 'none';
     }
 
     async function checkDelay() {
@@ -367,8 +450,18 @@
         return;
       }
 
+      if (!selectedOriginAirportId) {
+        alert(translations[currentLanguage].selectAirport);
+        return;
+      }
+
+      if (!selectedCarrierId) {
+        alert(translations[currentLanguage].selectCarrier);
+        return;
+      }
+
       try {
-        const response = await fetch(`http://localhost:3000/delay?airport_id=${selectedAirportId}&date=${date}`);
+        const response = await fetch(`http://localhost:3000/delay?airport_id=${selectedAirportId}&origin_airport_id=${selectedOriginAirportId}&carrier_id=${selectedCarrierId}&date=${date}`);
         const data = await response.json();
         
         const probability = data * 100;
@@ -388,6 +481,10 @@
       document.getElementById('dateInput').value = '';
       document.getElementById('results').innerHTML = '';
       selectedAirportId = null;
+      document.getElementById('originAirportInput').value = '';
+      document.getElementById('carrierInput').value = '';
+      selectedOriginAirportId = null;
+      selectedCarrierId = null;
     }
 
     // Initialize UI text
