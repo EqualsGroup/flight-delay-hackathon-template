@@ -190,6 +190,10 @@
         padding-right: 12px;
         padding-left: 0;
       }
+
+    #checkButton {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -224,6 +228,7 @@
     </div>
 
     <button onclick="checkDelay()" id="checkButton">Check Delay Probability</button>
+    <button onclick="resetForm()" id="resetButton">Reset</button>
 
     <div id="results"></div>
   </div>
@@ -368,6 +373,13 @@
         console.error('Error checking delay:', error);
         document.getElementById('results').innerHTML = `<p style="color: red;">${translations[currentLanguage].error}</p>`;
       }
+    }
+
+    function resetForm() {
+      document.getElementById('airportInput').value = '';
+      document.getElementById('dateInput').value = '';
+      document.getElementById('results').innerHTML = '';
+      selectedAirportId = null;
     }
 
     // Initialize UI text
