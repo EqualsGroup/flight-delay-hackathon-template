@@ -281,9 +281,9 @@
         error: 'Error checking delay probability. Please try again.',
         airportPlaceholder: 'Please start typing an arrival airport name',
         originAirport: 'Origin Airport:',
-        carrier: 'Carrier:',
+        carrier: 'Carrier (2-letter code):',
         originAirportPlaceholder: 'Please start typing an origin airport name',
-        carrierPlaceholder: 'Please start typing a carrier name',
+        carrierPlaceholder: 'Enter carrier code (e.g., AA, UA)',
         noResults: 'No results found'
       },
       es: {
@@ -299,9 +299,9 @@
         error: 'Error al verificar la probabilidad de retraso. Por favor, inténtelo de nuevo.',
         airportPlaceholder: 'Por favor, empiece a escribir el nombre del aeropuerto de llegada',
         originAirport: 'Aeropuerto de Origen:',
-        carrier: 'Aerolínea:',
+        carrier: 'Aerolínea (código de 2 letras):',
         originAirportPlaceholder: 'Por favor, empiece a escribir el nombre del aeropuerto de origen',
-        carrierPlaceholder: 'Por favor, empiece a escribir el nombre de la aerolínea',
+        carrierPlaceholder: 'Ingrese código de aerolínea (ej. AA, UA)',
         noResults: 'No se encontraron resultados'
       },
       de: {
@@ -317,9 +317,9 @@
         error: 'Fehler bei der Überprüfung der Verspätungswahrscheinlichkeit. Bitte versuchen Sie es erneut.',
         airportPlaceholder: 'Bitte beginnen Sie den Namen des Ankunftsflughafens einzugeben',
         originAirport: 'Abflughafen:',
-        carrier: 'Fluggesellschaft:',
+        carrier: 'Fluggesellschaft (2-Buchstaben-Code):',
         originAirportPlaceholder: 'Bitte beginnen Sie den Namen des Abflughafens einzugeben',
-        carrierPlaceholder: 'Bitte beginnen Sie den Namen der Fluggesellschaft einzugeben',
+        carrierPlaceholder: 'Geben Sie den Carrier-Code ein (z.B. AA, UA)',
         noResults: 'Keine Ergebnisse gefunden'
       },
       ar: {
@@ -335,9 +335,9 @@
         error: 'خطأ في التحقق من احتمالية التأخير. يرجى المحاولة مرة أخرى.',
         airportPlaceholder: 'يرجى البدء في كتابة اسم مطار الوصول',
         originAirport: 'مطار المغادرة:',
-        carrier: 'شركة الطيران:',
+        carrier: 'شركة الطيران (رمز من حرفين):',
         originAirportPlaceholder: 'يرجى البدء في كتابة اسم مطار المغادرة',
-        carrierPlaceholder: 'يرجى البدء في كتابة اسم شركة الطيران',
+        carrierPlaceholder: 'أدخل رمز شركة الطيران (مثل AA، UA)',
         noResults: 'لا توجد نتائج'
       }
     };
@@ -430,7 +430,7 @@
       }
 
       try {
-        const response = await fetch(`http://localhost:3010/carriers?name=${encodeURIComponent(query)}`);
+        const response = await fetch(`http://localhost:3010/carriers?name=${encodeURIComponent(query.toUpperCase())}`);
         const carriers = await response.json();
         
         const carrierList = document.getElementById('carrierList');
@@ -444,7 +444,7 @@
         } else {
           carriers.forEach(carrier => {
             const li = document.createElement('li');
-            li.textContent = carrier.name;
+            li.textContent = carrier;
             li.onclick = () => selectCarrier(carrier);
             carrierList.appendChild(li);
           });
@@ -469,8 +469,8 @@
     }
 
     function selectCarrier(carrier) {
-      document.getElementById('carrierInput').value = carrier.name;
-      selectedCarrierId = carrier.id;
+      document.getElementById('carrierInput').value = carrier;
+      selectedCarrierId = carrier;
       document.getElementById('carrierList').style.display = 'none';
     }
 
