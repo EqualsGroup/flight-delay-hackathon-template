@@ -135,17 +135,25 @@
     }
     #airportList li, #carrierList li, #originAirportList li {
       padding: 12px 20px;
-      cursor: pointer;
       transition: background-color 0.2s ease;
       border-bottom: 1px solid #f0f0f0;
     }
-    #airportList li:last-child, #carrierList li:last-child, #originAirportList li:last-child {
-      border-bottom: none;
+
+    #airportList li:not(.no-results), 
+    #carrierList li:not(.no-results), 
+    #originAirportList li:not(.no-results) {
+      cursor: pointer;
     }
-    #airportList li:hover, #carrierList li:hover, #originAirportList li:hover {
+
+    .no-results {
+      padding: 12px 20px;
+      color: #666;
+      font-style: italic;
+      text-align: center;
       background-color: #f8f9fa;
-      padding-left: 20px;
+      cursor: default !important;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -199,6 +207,12 @@
 
     #checkButton {
       margin-bottom: 10px;
+    }
+
+    .no-results {
+      padding: 12px 20px;
+      color: #666;
+      font-style: italic;
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -269,7 +283,8 @@
         originAirport: 'Origin Airport:',
         carrier: 'Carrier:',
         originAirportPlaceholder: 'Please start typing an origin airport name',
-        carrierPlaceholder: 'Please start typing a carrier name'
+        carrierPlaceholder: 'Please start typing a carrier name',
+        noResults: 'No results found'
       },
       es: {
         title: 'Predictor de Retrasos de Vuelos',
@@ -286,7 +301,8 @@
         originAirport: 'Aeropuerto de Origen:',
         carrier: 'Aerolínea:',
         originAirportPlaceholder: 'Por favor, empiece a escribir el nombre del aeropuerto de origen',
-        carrierPlaceholder: 'Por favor, empiece a escribir el nombre de la aerolínea'
+        carrierPlaceholder: 'Por favor, empiece a escribir el nombre de la aerolínea',
+        noResults: 'No se encontraron resultados'
       },
       de: {
         title: 'Flugverspätungs-Prognose',
@@ -303,7 +319,8 @@
         originAirport: 'Abflughafen:',
         carrier: 'Fluggesellschaft:',
         originAirportPlaceholder: 'Bitte beginnen Sie den Namen des Abflughafens einzugeben',
-        carrierPlaceholder: 'Bitte beginnen Sie den Namen der Fluggesellschaft einzugeben'
+        carrierPlaceholder: 'Bitte beginnen Sie den Namen der Fluggesellschaft einzugeben',
+        noResults: 'Keine Ergebnisse gefunden'
       },
       ar: {
         title: 'متنبئ تأخير الرحلات',
@@ -320,7 +337,8 @@
         originAirport: 'مطار المغادرة:',
         carrier: 'شركة الطيران:',
         originAirportPlaceholder: 'يرجى البدء في كتابة اسم مطار المغادرة',
-        carrierPlaceholder: 'يرجى البدء في كتابة اسم شركة الطيران'
+        carrierPlaceholder: 'يرجى البدء في كتابة اسم شركة الطيران',
+        noResults: 'لا توجد نتائج'
       }
     };
 
@@ -385,14 +403,21 @@
         const airportList = document.getElementById(listId);
         airportList.innerHTML = '';
         
-        airports.forEach(airport => {
+        if (airports.length === 0) {
           const li = document.createElement('li');
-          li.textContent = airport.name;
-          li.onclick = () => type === 'origin' ? selectOriginAirport(airport) : selectAirport(airport);
+          li.className = 'no-results';
+          li.textContent = translations[currentLanguage].noResults;
           airportList.appendChild(li);
-        });
+        } else {
+          airports.forEach(airport => {
+            const li = document.createElement('li');
+            li.textContent = airport.name;
+            li.onclick = () => type === 'origin' ? selectOriginAirport(airport) : selectAirport(airport);
+            airportList.appendChild(li);
+          });
+        }
         
-        airportList.style.display = airports.length ? 'block' : 'none';
+        airportList.style.display = 'block';
       } catch (error) {
         console.error('Error fetching airports:', error);
       }
@@ -411,14 +436,21 @@
         const carrierList = document.getElementById('carrierList');
         carrierList.innerHTML = '';
         
-        carriers.forEach(carrier => {
+        if (carriers.length === 0) {
           const li = document.createElement('li');
-          li.textContent = carrier.name;
-          li.onclick = () => selectCarrier(carrier);
+          li.className = 'no-results';
+          li.textContent = translations[currentLanguage].noResults;
           carrierList.appendChild(li);
-        });
+        } else {
+          carriers.forEach(carrier => {
+            const li = document.createElement('li');
+            li.textContent = carrier.name;
+            li.onclick = () => selectCarrier(carrier);
+            carrierList.appendChild(li);
+          });
+        }
         
-        carrierList.style.display = carriers.length ? 'block' : 'none';
+        carrierList.style.display = 'block';
       } catch (error) {
         console.error('Error fetching carriers:', error);
       }
