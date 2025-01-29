@@ -1,0 +1,12 @@
+curl -X POST \
+  http://localhost:5000/predict \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "dayOfWeek": 1,
+    "month": 1,
+    "dayOfMonth": 1,
+    "carrierId": 5,
+    "originAirportId": 15304,
+    "destAirportId": 13232
+    }
+'

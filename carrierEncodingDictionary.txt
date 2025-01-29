@@ -1,0 +1,17 @@
+Carrier Encoding Dictionary:
+'9E': 0
+'AA': 1
+'AS': 2
+'B6': 3
+'DL': 4
+'EV': 5
+'F9': 6
+'FL': 7
+'HA': 8
+'MQ': 9
+'OO': 10
+'UA': 11
+'US': 12
+'VX': 13
+'WN': 14
+'YV': 15
