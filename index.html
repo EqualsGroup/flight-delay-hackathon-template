@@ -379,7 +379,7 @@
       }
 
       try {
-        const response = await fetch(`http://localhost:3000/airports?name=${encodeURIComponent(query)}`);
+        const response = await fetch(`http://localhost:3010/airports?name=${encodeURIComponent(query)}`);
         const airports = await response.json();
         
         const airportList = document.getElementById(listId);
@@ -405,7 +405,7 @@
       }
 
       try {
-        const response = await fetch(`http://localhost:3000/carriers?name=${encodeURIComponent(query)}`);
+        const response = await fetch(`http://localhost:3010/carriers?name=${encodeURIComponent(query)}`);
         const carriers = await response.json();
         
         const carrierList = document.getElementById('carrierList');
@@ -465,7 +465,7 @@
       }
 
       try {
-        const response = await fetch(`http://localhost:3000/delay?origin_airport_id=${selectedOriginAirportId}&destination_airport_id=${selectedDestinationAirportId}&carrier_id=${selectedCarrierId}&date=${date}`);
+        const response = await fetch(`http://localhost:3010/delay?origin_airport_id=${selectedOriginAirportId}&destination_airport_id=${selectedDestinationAirportId}&carrier_id=${selectedCarrierId}&date=${date}`);
         const data = await response.json();
         
         const probability = data * 100;
