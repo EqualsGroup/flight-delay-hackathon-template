@@ -136,6 +136,25 @@
       border-radius: 4px;
       border: 1px solid #e0e0e0;
     }
+
+    /* Add RTL support */
+    [dir="rtl"] {
+      text-align: right;
+    }
+
+    [dir="rtl"] .language-selector {
+      left: 20px;
+      right: auto;
+    }
+
+    [dir="rtl"] #airportList li:hover {
+      padding-right: 20px;
+      padding-left: 12px;
+    }
+
+    [dir="rtl"] .container {
+      text-align: right;
+    }
   </style>
 </head>
 <body>
@@ -144,6 +163,7 @@
       <option value="en">English</option>
       <option value="es">Español</option>
       <option value="de">Deutsch</option>
+      <option value="ar">العربية</option>
     </select>
   </div>
   <div class="container">
@@ -199,6 +219,17 @@
         results: 'Ergebnisse:',
         delayChance: 'Es besteht eine {probability}% Wahrscheinlichkeit, dass sich Ihr Flug um mehr als 15 Minuten verspätet.',
         error: 'Fehler bei der Überprüfung der Verspätungswahrscheinlichkeit. Bitte versuchen Sie es erneut.'
+      },
+      ar: {
+        title: 'متنبئ تأخير الرحلات',
+        airport: 'المطار:',
+        date: 'التاريخ:',
+        checkButton: 'تحقق من احتمالية التأخير',
+        selectAirport: 'الرجاء اختيار المطار',
+        selectDate: 'الرجاء اختيار التاريخ',
+        results: 'النتائج:',
+        delayChance: 'هناك احتمال {probability}% بأن تتأخر رحلتك لأكثر من 15 دقيقة.',
+        error: 'خطأ في التحقق من احتمالية التأخير. يرجى المحاولة مرة أخرى.'
       }
     };
 
@@ -207,6 +238,13 @@
     function changeLanguage() {
       currentLanguage = document.getElementById('languageSelect').value;
       updateUIText();
+      updateTextDirection();
+    }
+
+    function updateTextDirection() {
+      const isRTL = currentLanguage === 'ar';
+      document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+      document.documentElement.lang = currentLanguage;
     }
 
     function updateUIText() {
@@ -287,6 +325,8 @@
 
     // Initialize UI text
     updateUIText();
+    // Initialize text direction
+    updateTextDirection();
   </script>
 </body>
 </html>
