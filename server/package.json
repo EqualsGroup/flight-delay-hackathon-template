@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
-    "start": "tsc && node dist/index.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
+    "start": "tsc && node dist/index.js && npm run start-model-server",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts && npm run start-model-server",
+    "start-model-server": "python ./src/model-server.py"
   },
   "dependencies": {
     "csv-parse": "^5.6.0",

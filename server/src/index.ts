@@ -20,6 +20,8 @@ type Airport = {
 let allCarriers: string[] = [];
 let allAirports: Airport[] = [];
 
+const flaskUrl = "http://localhost:5000";
+
 readFlightsData();
 
 app.get("/airports", (req, res) => {
@@ -53,7 +55,42 @@ app.get("/carriers", (req, res) => {
   res.json(allCarriers);
 });
 
-app.get("/delay", (req, res) => {});
+app.get("/delay", (req, res) => {
+  const {
+    origin_airport_id: originAirportId,
+    destination_airport_id: destAirportId,
+    carrier_id: carrierId,
+    date: dateString,
+  } = req.query;
+
+  const date = new Date(dateString as string);
+
+  console.log({
+    originAirportId,
+    destAirportId,
+    carrierId,
+    date,
+  });
+
+  // make a request to the Flask server to get the delay
+  const url = new URL(flaskUrl + "/delay");
+  url.searchParams.append("originAirportId", originAirportId as string);
+  url.searchParams.append("destAirportId", destAirportId as string);
+  url.searchParams.append("carrierId", carrierId as string);
+  url.searchParams.append("dayOfWeek", date.getDay().toString());
+  url.searchParams.append("month", (date.getMonth() + 1).toString());
+  url.searchParams.append("dayOfMonth", date.getDate().toString());
+
+  fetch(url.toString())
+    .then((response) => response.json())
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((error) => {
+      console.error("Error fetching data from Flask server:", error);
+      res.status(500).send("Internal Server Error");
+    });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
