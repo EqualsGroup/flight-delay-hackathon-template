@@ -347,7 +347,7 @@
       document.getElementById('carrierInput').placeholder = translations[currentLanguage].carrierPlaceholder;
     }
 
-    let selectedAirportId = null;
+    let selectedDestinationAirportId = null;
     let selectedOriginAirportId = null;
     let selectedCarrierId = null;
     let debounceTimer;
@@ -422,7 +422,7 @@
 
     function selectAirport(airport) {
       document.getElementById('airportInput').value = airport.name;
-      selectedAirportId = airport.id;
+      selectedDestinationAirportId = airport.id;
       document.getElementById('airportList').style.display = 'none';
     }
 
@@ -439,7 +439,7 @@
     }
 
     async function checkDelay() {
-      if (!selectedAirportId) {
+      if (!selectedDestinationAirportId) {
         alert(translations[currentLanguage].selectAirport);
         return;
       }
@@ -461,7 +461,7 @@
       }
 
       try {
-        const response = await fetch(`http://localhost:3000/delay?airport_id=${selectedAirportId}&origin_airport_id=${selectedOriginAirportId}&carrier_id=${selectedCarrierId}&date=${date}`);
+        const response = await fetch(`http://localhost:3000/delay?origin_airport_id=${selectedOriginAirportId}&destination_airport_id=${selectedDestinationAirportId}&carrier_id=${selectedCarrierId}&date=${date}`);
         const data = await response.json();
         
         const probability = data * 100;
@@ -480,7 +480,7 @@
       document.getElementById('airportInput').value = '';
       document.getElementById('dateInput').value = '';
       document.getElementById('results').innerHTML = '';
-      selectedAirportId = null;
+      selectedDestinationAirportId = null;
       document.getElementById('originAirportInput').value = '';
       document.getElementById('carrierInput').value = '';
       selectedOriginAirportId = null;
