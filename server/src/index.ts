@@ -5,19 +5,30 @@ import { parse } from "csv-parse";
 const app = express();
 const port = 3010;
 
+// Year,Month,DayofMonth,DayOfWeek,Carrier,OriginAirportID,OriginAirportName,OriginCity,OriginState,DestAirportID,DestAirportName,DestCity,DestState,CRSDepTime,DepDelay,DepDel15,CRSArrTime,ArrDelay,ArrDel15,Cancelled
+const originAirportIdIndex = 5;
+const originAirportNameIndex = 6;
+const destAirportIdIndex = 9;
+const destAirportNameIndex = 10;
+const carrierIndex = 4;
+
+type Airport = {
+  name: string;
+  id: string;
+};
+
 let allCarriers: string[] = [];
-let allAirports: string[] = [];
+let allAirports: Airport[] = [];
 
 readFlightsData();
 
 app.get("/airports", (req, res) => {
-  const name = req.query.name;
+  const name = req.query.name as string;
   if (name) {
-    res.json(
-      allAirports.filter((airport: string) =>
-        airport.toLowerCase().includes(name.toString().toLowerCase())
-      )
+    const filteredAirports = allAirports.filter((airport: Airport) =>
+      airport.name.toLowerCase().includes(name.toLowerCase())
     );
+    res.json(filteredAirports);
     return;
   }
 
@@ -42,9 +53,7 @@ app.get("/carriers", (req, res) => {
   res.json(allCarriers);
 });
 
-app.get("/delay", (req, res) => {
-  res.json({});
-});
+app.get("/delay", (req, res) => {});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
@@ -67,21 +76,32 @@ function readFlightsData() {
       }
 
       const carriersSet = new Set<string>();
-      const airportsSet = new Set<string>();
+      const airportsMap = new Map<string, string>();
       records.forEach((record: any, index: number) => {
         if (!index) {
           return;
         }
 
-        carriersSet.add(record[4]);
+        carriersSet.add(record[carrierIndex]);
 
-        airportsSet.add(record[6]);
-        airportsSet.add(record[10]);
+        const originAirportName = record[originAirportNameIndex];
+        if (!airportsMap.has(record[originAirportNameIndex])) {
+          const airportId = record[originAirportIdIndex];
+          airportsMap.set(originAirportName, airportId);
+        }
+
+        const destAirportName = record[destAirportNameIndex];
+        if (!airportsMap.has(destAirportName)) {
+          const airportId = record[destAirportIdIndex];
+          airportsMap.set(destAirportName, airportId);
+        }
       });
 
       allCarriers = Array.from(carriersSet);
-      allAirports = Array.from(airportsSet);
-      console.log({ allCarriers, allAirports });
+
+      for (const [name, id] of airportsMap.entries()) {
+        allAirports.push({ id, name });
+      }
     });
   });
 }
