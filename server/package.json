@@ -11,7 +11,7 @@
     "csv-parser": "^3.0.0",
     "fs": "0.0.1-security",
     "date-fns": "^2.23.0",
-    "picklejs": "^1.0.0"
+    "picklejs": "0.101.0"
   },
   "devDependencies": {
     "ts-node": "^10.0.0",
