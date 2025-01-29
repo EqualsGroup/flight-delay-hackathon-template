@@ -55,7 +55,7 @@
       padding: 30px;
       border-radius: 16px;
       box-shadow: 
-        0 4px 30px rgba(0, 0, 0, 0.1),
+        0 8px 40px rgba(0, 0, 0, 0.15),
         inset 0 0 0 1px rgba(255, 255, 255, 0.3);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -64,9 +64,6 @@
     }
     .container:hover {
       transform: translateY(-5px);
-      box-shadow: 
-        0 8px 40px rgba(0, 0, 0, 0.15),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.4);
     }
     h1 {
       color: #2c3e50;
@@ -113,10 +110,10 @@
       transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 1px;
+      box-shadow: 0 5px 15px rgba(52,152,219,0.4);
     }
     button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(52,152,219,0.4);
     }
     #results {
       margin-top: 30px;
@@ -137,9 +134,9 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     #airportList li, #carrierList li, #originAirportList li {
-      padding: 12px;
+      padding: 12px 20px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease;
       border-bottom: 1px solid #f0f0f0;
     }
     #airportList li:last-child, #carrierList li:last-child, #originAirportList li:last-child {
@@ -178,9 +175,16 @@
       right: auto;
     }
 
+    [dir="rtl"] #airportList li, 
+    [dir="rtl"] #carrierList li, 
+    [dir="rtl"] #originAirportList li {
+      padding: 12px 20px;
+    }
+
     [dir="rtl"] #airportList li:hover, [dir="rtl"] #carrierList li:hover, [dir="rtl"] #originAirportList li:hover {
       padding-right: 20px;
       padding-left: 12px;
+      background-color: #f8f9fa;
     }
 
     [dir="rtl"] .container {
