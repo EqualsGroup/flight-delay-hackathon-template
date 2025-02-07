@@ -1,9 +1,14 @@
 import express from "express";
 import fs from "fs";
 import { parse } from "csv-parse";
+import cors from "cors";
 
 const app = express();
 const port = 3010;
+
+app.use(cors({
+  origin: /^http:\/\/localhost:\d+$/
+}));
 
 // Year,Month,DayofMonth,DayOfWeek,Carrier,OriginAirportID,OriginAirportName,OriginCity,OriginState,DestAirportID,DestAirportName,DestCity,DestState,CRSDepTime,DepDelay,DepDel15,CRSArrTime,ArrDelay,ArrDel15,Cancelled
 const originAirportIdIndex = 5;
