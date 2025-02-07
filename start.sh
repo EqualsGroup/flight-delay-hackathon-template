@@ -10,8 +10,18 @@ trap cleanup EXIT INT TERM
 
 # Install the dependencies
 
+# Start the model server in the background
+pushd server-model || exit
+if [ ! -d ".venv" ]; then
+  python -m venv .venv
+fi
+source .venv/bin/activate
+pip install -r requirements.txt
+python model-server.py >/dev/null &
+popd || exit
+
 # Start the api server in the background
-pushd server || exit
+pushd server-api || exit
 pnpm install
 pnpm start >/dev/null &
 popd || exit

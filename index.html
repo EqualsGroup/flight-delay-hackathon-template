@@ -479,28 +479,49 @@
         alert(translations[currentLanguage].selectAirport);
         return;
       }
-
-      const date = document.getElementById('dateInput').value;
-      if (!date) {
+      
+      const dateValue = document.getElementById('dateInput').value;
+      if (!dateValue) {
         alert(translations[currentLanguage].selectDate);
         return;
       }
-
+      
       if (!selectedOriginAirportId) {
         alert(translations[currentLanguage].selectAirport);
         return;
       }
-
+      
       if (!selectedCarrierId) {
-        alert(translations[currentLanguage].selectCarrier);
+        alert(translations[currentLanguage].selectCarrier || "Please select a carrier");
         return;
       }
+      
+      // Parse date to obtain dayOfMonth, month, dayOfWeek
+      const dateObj = new Date(dateValue);
+      const dayOfMonth = dateObj.getDate();
+      const month = dateObj.getMonth() + 1;
+      // getDay(): 0 (Sunday) ... 6 (Saturday); adjust if needed
+      const dayOfWeek = dateObj.getDay() || 7; 
 
+      const payload = {
+        originAirportId: selectedOriginAirportId,
+        destAirportId: selectedDestinationAirportId,
+        carrierId: selectedCarrierId,
+        dayOfWeek: dayOfWeek,
+        month: month,
+        dayOfMonth: dayOfMonth
+      };
+      
       try {
-        const response = await fetch(`http://localhost:3010/delay?origin_airport_id=${selectedOriginAirportId}&destination_airport_id=${selectedDestinationAirportId}&carrier_id=${selectedCarrierId}&date=${date}`);
+        const response = await fetch('http://localhost:5000/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
         const data = await response.json();
         
-        const probability = data * 100;
+        // Use delayed probability from the response
+        const probability = data.delayed * 100;
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = `<h3>${translations[currentLanguage].results}</h3>
           <p>${translations[currentLanguage].delayChance.replace('{probability}', probability.toFixed(1))}</p>`;
